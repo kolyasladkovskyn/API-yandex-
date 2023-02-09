@@ -20,7 +20,7 @@ class Example(QWidget):
         self.initUI()
         self.maps_params = {
             'll': '',
-            'size': '200,300',
+            'size': '400,200',
             'l': 'map',
             'z': '8',
             'spn': '0.005,0.005',
@@ -46,6 +46,14 @@ class Example(QWidget):
         elif key == 65:
             y = str(float(self.maps_params['ll'].split(',')[0]) - 0.5)
             self.maps_params['ll'] = (y + ',' + self.maps_params['ll'].split(',')[1])
+        # вверх маштаб
+        elif key == 16777238:
+            a = str(float(self.maps_params['spn'].split(',')[0])+9)
+            self.maps_params['spn'] = (a+','+a)
+        # вниз маштаб
+        elif key == 16777239:
+            a = str(float(self.maps_params['spn'].split(',')[0]) - 9)
+            self.maps_params['spn'] = (a + ',' + a)
         self.show_map()
     def initUI(self):
         self.setGeometry(300, 300, 400, 400)
@@ -80,7 +88,7 @@ class Example(QWidget):
         self.Error.move(20, 140)
 
         self.label = QLabel(self)
-        self.label.move(10,170)
+        self.label.move(0,170)
     def show_st(self):
         self.maps_params['ll'] = ','.join([self.ql1.text(), self.ql2.text()])
         self.maps_params['spn'] = f'{self.mashtab.text()},{self.mashtab.text()}'
@@ -97,7 +105,7 @@ class Example(QWidget):
         else:
             self.map = QPixmap('./data/map.png')
             self.label.setPixmap(self.map)
-            self.label.resize(200,200)
+            self.label.resize(200, 200)
 
 
 if __name__ == '__main__':
