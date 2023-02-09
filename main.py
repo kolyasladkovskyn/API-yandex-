@@ -53,7 +53,6 @@ class Example(QWidget):
         self.Error.move(20, 140)
 
         self.label = QLabel(self)
-        self.label.size = 100
         self.label.move(50, 140)
 
     def show_st(self):
@@ -69,9 +68,7 @@ class Example(QWidget):
                 file.write(response.content)
         except requests.exceptions.ConnectionError:
             self.Error.setText('Connection failed')
-            self.Error.show()
         else:
-            self.Error.hide()
             self.map = QPixmap('data/map.png')
             self.label.setPixmap(self.map)
 
