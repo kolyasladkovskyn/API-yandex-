@@ -1,10 +1,17 @@
 import sys
 import json
 import requests
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
-from PyQt5.QtWidgets import QLabel, QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QLineEdit
 from PyQt5.QtGui import QPixmap
 from API import API_KEY
+
+
+sys._excepthook = sys.excepthook # save original excepthook
+
+def exception_hook(exctype, value, traceback):
+    print(exctype, value, traceback) # print exception.
+    sys._excepthook(exctype, value, traceback) # call original excepthoot. I do not why
+    sys.exit(1) # terminate program if above do not do this
 
 
 class Example(QWidget):
@@ -20,6 +27,26 @@ class Example(QWidget):
             'pt': ''
         }
 
+    def keyPressEvent(self, event):
+        key = event.key()
+        super().keyPressEvent(event)
+        # вверх с помощью W
+        if key == 87:
+            x = str(float(self.maps_params['ll'].split(',')[1]) + 0.5)
+            self.maps_params['ll'] = (self.maps_params['ll'].split(',')[0]+',' + x)
+        # вниз с помощью S
+        elif key == 83:
+            x = str(float(self.maps_params['ll'].split(',')[1]) - 0.5)
+            self.maps_params['ll'] = (self.maps_params['ll'].split(',')[0] + ',' + x)
+        # вправо с помощью D
+        elif key == 68:
+            y = str(float(self.maps_params['ll'].split(',')[0]) + 0.5)
+            self.maps_params['ll'] = (y + ',' + self.maps_params['ll'].split(',')[1])
+        # влево с помощью A
+        elif key == 65:
+            y = str(float(self.maps_params['ll'].split(',')[0]) - 0.5)
+            self.maps_params['ll'] = (y + ',' + self.maps_params['ll'].split(',')[1])
+        self.show_map()
     def initUI(self):
         self.setGeometry(300, 300, 400, 400)
         self.setWindowTitle('карты')
@@ -47,14 +74,13 @@ class Example(QWidget):
 
         self.but = QPushButton("Готово", self)
         self.but.move(30, 130)
-        self.but.clicked.connect(self.shower)
+        self.but.clicked.connect(self.show_st)
 
         self.Error = QLabel("")
         self.Error.move(20, 140)
 
         self.label = QLabel(self)
-        self.label.move(50, 140)
-
+        self.label.move(10,170)
     def show_st(self):
         self.maps_params['ll'] = ','.join([self.ql1.text(), self.ql2.text()])
         self.maps_params['spn'] = f'{self.mashtab.text()},{self.mashtab.text()}'
@@ -69,11 +95,13 @@ class Example(QWidget):
         except requests.exceptions.ConnectionError:
             self.Error.setText('Connection failed')
         else:
-            self.map = QPixmap('data/map.png')
+            self.map = QPixmap('./data/map.png')
             self.label.setPixmap(self.map)
+            self.label.resize(200,200)
 
 
 if __name__ == '__main__':
+    sys.excepthook = exception_hook
     app = QApplication(sys.argv)
     ex = Example()
     ex.show()
