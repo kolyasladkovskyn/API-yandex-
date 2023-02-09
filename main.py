@@ -56,10 +56,9 @@ class Example(QWidget):
         self.label.size = 100
         self.label.move(50, 140)
 
-    def shower(self):
+    def show_st(self):
         self.maps_params['ll'] = ','.join([self.ql1.text(), self.ql2.text()])
-        if self.mashtab.text():
-            self.maps_params['spn'] = f'{self.mashtab.text()},{self.mashtab.text()}'
+        self.maps_params['spn'] = f'{self.mashtab.text()},{self.mashtab.text()}'
         self.show_map()
 
     def show_map(self):
@@ -73,8 +72,8 @@ class Example(QWidget):
             self.Error.show()
         else:
             self.Error.hide()
-            self.pixmap = QPixmap('data/map.png')
-            self.label.setPixmap(self.pixmap)
+            self.map = QPixmap('data/map.png')
+            self.label.setPixmap(self.map)
 
 
 if __name__ == '__main__':
