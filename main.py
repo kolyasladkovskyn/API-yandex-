@@ -42,37 +42,40 @@ class Example(QWidget):
         return str(x)
 
     def keyPressEvent(self, event):
-        key = event.key()
-        super().keyPressEvent(event)
-        # вверх с помощью W
-        if key == 87:
-            y = float(self.maps_params['ll'].split(',')[1]) + 0.5
-            y = self.check_y(y)
-            self.maps_params['ll'] = (self.maps_params['ll'].split(',')[0] + ',' + y)
-        # вниз с помощью S
-        elif key == 83:
-            y = float(self.maps_params['ll'].split(',')[1]) - 0.5
-            y = self.check_y(y)
-            self.maps_params['ll'] = (self.maps_params['ll'].split(',')[0] + ',' + y)
-        # вправо с помощью D
-        elif key == 68:
-            x = float(self.maps_params['ll'].split(',')[0]) + 2
-            x = self.check_x(x)
-            self.maps_params['ll'] = (x + ',' + self.maps_params['ll'].split(',')[1])
-        # влево с помощью A
-        elif key == 65:
-            x = float(self.maps_params['ll'].split(',')[0]) - 2
-            x = self.check_x(x)
-            self.maps_params['ll'] = (x + ',' + self.maps_params['ll'].split(',')[1])
-        # вверх маштаб
-        elif key == 16777238:
-            a = str(float(self.maps_params['spn'].split(',')[0]) + 5)
-            self.maps_params['spn'] = (a + ',' + a)
-        # вниз маштаб
-        elif key == 16777239:
-            a = str(float(self.maps_params['spn'].split(',')[0]) - 5)
-            self.maps_params['spn'] = (a + ',' + a)
-        self.show_map()
+        try:
+            key = event.key()
+            super().keyPressEvent(event)
+            # вверх с помощью W
+            if key == 87:
+                y = float(self.maps_params['ll'].split(',')[1]) + 0.5
+                y = self.check_y(y)
+                self.maps_params['ll'] = (self.maps_params['ll'].split(',')[0] + ',' + y)
+            # вниз с помощью S
+            elif key == 83:
+                y = float(self.maps_params['ll'].split(',')[1]) - 0.5
+                y = self.check_y(y)
+                self.maps_params['ll'] = (self.maps_params['ll'].split(',')[0] + ',' + y)
+            # вправо с помощью D
+            elif key == 68:
+                x = float(self.maps_params['ll'].split(',')[0]) + 2
+                x = self.check_x(x)
+                self.maps_params['ll'] = (x + ',' + self.maps_params['ll'].split(',')[1])
+            # влево с помощью A
+            elif key == 65:
+                x = float(self.maps_params['ll'].split(',')[0]) - 2
+                x = self.check_x(x)
+                self.maps_params['ll'] = (x + ',' + self.maps_params['ll'].split(',')[1])
+            # вверх маштаб
+            elif key == 16777238:
+                a = str(float(self.maps_params['spn'].split(',')[0]) + 5)
+                self.maps_params['spn'] = (a + ',' + a)
+            # вниз маштаб
+            elif key == 16777239:
+                a = str(float(self.maps_params['spn'].split(',')[0]) - 5)
+                self.maps_params['spn'] = (a + ',' + a)
+            self.show_map()
+        except:
+            self.Error.setText('Ошибка карты')
 
     def initUI(self):
         self.setGeometry(400, 400, 400, 500)
@@ -108,6 +111,37 @@ class Example(QWidget):
 
         self.label = QLabel(self)
         self.label.move(10, 160)
+
+        self.schem_but = QPushButton("Схема", self)
+        self.schem_but.move(170, 20)
+        self.schem_but.clicked.connect(self.change_map_view_schem)
+        self.sput_but = QPushButton("Спутник", self)
+        self.sput_but.move(170, 50)
+        self.sput_but.clicked.connect(self.change_map_view_sput)
+        self.hybr_but = QPushButton("Гибрид", self)
+        self.hybr_but.move(170, 80)
+        self.hybr_but.clicked.connect(self.change_map_view_hybr)
+
+    def change_map_view_schem(self):
+        try:
+            self.maps_params['l'] = 'map'
+            self.show_map()
+        except:
+            pass
+
+    def change_map_view_sput(self):
+        try:
+            self.maps_params['l'] = 'sat'
+            self.show_map()
+        except:
+            pass
+
+    def change_map_view_hybr(self):
+        try:
+            self.maps_params['l'] = 'sat,skl'
+            self.show_map()
+        except:
+            pass
 
     def show_st(self):
         self.maps_params['ll'] = ','.join([self.ql1.text(), self.ql2.text()])
